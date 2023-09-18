@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Text,
     View,
@@ -9,17 +9,56 @@ import {
     Keyboard,
     Image
 } from 'react-native';
+import {
+    createTable,
+    adicionaProduto,
+    obtemTodosProdutos
+} from '../../services/dbService';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 import styles from './styles';
-import * as Validacao from '../../Utils/Validacao';
+import * as Validacao from '../../utils/Validacao';
 export default function CadastroProduto({ navigation }) {
 
-    let props = navigation.state.params;
-
+    const [id, setId] = useState();
     const [codigo, setCodigo] = useState(props !== undefined ? props.codigo : '');
-    const [descricao, setDescricao] = useState(props !== undefined ? props.codigo : '');
+    const [descricao, setDescricao] = useState(props !== undefined ? props.descricao : '');
     const [preco, setPreco] = useState(props !== undefined ? props.preco.toString() : 0);
+
+    let tabelasCriadas = false;
+
+    async function processamentoUseEffect() {
+        if (!tabelasCriadas) {
+            console.log("Verificando necessidade de criar tabelas...");
+            tabelasCriadas = true;
+            await createTable();
+        }
+
+        console.log("UseEffect...");
+        // await carregaDados();
+    }
+
+    useEffect(
+        () => {
+            console.log('executando useffect');
+            processamentoUseEffect(); //necessário método pois aqui não pode utilizar await...
+        }, []);
+
+
+    function createUniqueId() {
+        return Date.now().toString(36) + Math.random().toString(36).slice(0, 2);
+    }
+
+    // async function carregaDados() {
+    //     try {      
+    //         let contatos = await obtemTodosProdutos()
+    //         setContatos(contatos);      
+    //     } catch (e) {
+    //       Alert.alert(e.toString());
+    //     }
+    //   }
+
+    let props = navigation.state.params;
 
     function verificaCampos() {
         if (Validacao.verficaCodigo(codigo)) {
@@ -42,19 +81,23 @@ export default function CadastroProduto({ navigation }) {
 
     async function salvaDados() {
 
+        let novoRegistro = id == undefined;
+
         let obj = {
+            id: novoRegistro ? createUniqueId() : id,
             codigo: codigo,
             preco: preco,
             descricao: descricao,
         };
 
         try {
-            //let resposta = (await adicionaProduto(obj));
+            let resposta = (await adicionaProduto(obj));
+            console.log(resposta);
 
-            //if (resposta)
-            Alert.alert('adicionado com sucesso!');
-            //else
-            //Alert.alert('Ocorreu um erro!');
+            if (resposta)
+                Alert.alert('adicionado com sucesso!');
+            else
+                Alert.alert('Ocorreu um erro!');
 
             Keyboard.dismiss();
             navigation.navigate('Venda');
