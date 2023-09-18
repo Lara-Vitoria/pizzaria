@@ -6,9 +6,9 @@ import ListaVendas from './src/components/ListaVendas';
 
 const Routes = createAppContainer(
   createSwitchNavigator({
-    ListaVendas,
-    Venda,
     CadastroProduto,
+    Venda,
+    ListaVendas,
   })
 );
 export default function App() {
