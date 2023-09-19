@@ -12,7 +12,6 @@ import {
 import {
     createTable,
     adicionaProduto,
-    obtemTodosProdutos
 } from '../../services/dbService';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 
@@ -48,15 +47,6 @@ export default function CadastroProduto({ navigation }) {
     function createUniqueId() {
         return Date.now().toString(36) + Math.random().toString(36).slice(0, 2);
     }
-
-    // async function carregaDados() {
-    //     try {      
-    //         let contatos = await obtemTodosProdutos()
-    //         setContatos(contatos);      
-    //     } catch (e) {
-    //       Alert.alert(e.toString());
-    //     }
-    //   }
 
     let props = navigation.state.params;
 

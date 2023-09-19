@@ -2,22 +2,47 @@ import { Text, View, TouchableOpacity, StatusBar, Image, Alert, ScrollView } fro
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 import styles from './styles';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Produto from '../Produto';
+import {
+    excluiProduto,
+    obtemTodosProdutos,
+    createTable
+} from '../../services/dbService';
 
-let produtos = [
-    { "codigo": "1", "descricao": "Marguerita", "preco": 10 },
-    { "codigo": "2", "descricao": "Portuguesa", "preco": 20 },
-    { "codigo": "3", "descricao": "Brócolis", "preco": 30 },
-    { "codigo": "4", "descricao": "Mussarela", "preco": 40 },
-    { "codigo": "5", "descricao": "Mussarela", "preco": 40 },
-    { "codigo": "6", "descricao": "Mussarela", "preco": 40 },
-    { "codigo": "7", "descricao": "Mussarela", "preco": 40 },
-    { "codigo": "8", "descricao": "Mussarela ", "preco": 40 },
-]
+// let produtos = [
+//     { "codigo": "1", "descricao": "Marguerita", "preco": 10 },
+//     { "codigo": "2", "descricao": "Portuguesa", "preco": 20 },
+//     { "codigo": "3", "descricao": "Brócolis", "preco": 30 },
+//     { "codigo": "4", "descricao": "Mussarela", "preco": 40 },
+//     { "codigo": "5", "descricao": "Mussarela", "preco": 40 },
+//     { "codigo": "6", "descricao": "Mussarela", "preco": 40 },
+//     { "codigo": "7", "descricao": "Mussarela", "preco": 40 },
+//     { "codigo": "8", "descricao": "Mussarela ", "preco": 40 },
+// ]
 export default function Venda({ navigation }) {
+
     const [totalGeral, setTotalGeral] = useState(0);
     const [produtosSelecionados, setProdutosSelecionados] = useState([]);
+    const [produtos, setProdutos] = useState([]);
+    // const tabelasCriadas = true;
+
+    async function processamentoUseEffect() {
+        // if (!tabelasCriadas) {
+        //     console.log("Verificando necessidade de criar tabelas...");
+        //     tabelasCriadas = true;
+        //     await createTable();
+        // }
+
+        console.log("UseEffect...");
+        await carregaDados();
+    }
+
+    useEffect(
+        () => {
+            console.log('executando useffect');
+            processamentoUseEffect(); //necessário método pois aqui não pode utilizar await...
+        }, []);
 
     const atualizarTotalGeral = (valorProduto) => {
         setTotalGeral(totalGeral + valorProduto);
@@ -34,11 +59,20 @@ export default function Venda({ navigation }) {
 
     async function removeProduto(codigo) {
         try {
-            //await excluiProduto(codigo);
-            //await carregaDados();
-            Alert.alert('Produto apagado com sucesso!');
+            await excluiProduto(codigo);
+            await carregaDados();
+            Alert.alert('Produto excluido com sucesso!');
         } catch (e) {
             Alert.alert(e);
+        }
+    }
+
+    async function carregaDados() {
+        try {
+            let produtos = await obtemTodosProdutos()
+            setProdutos(produtos);
+        } catch (e) {
+            Alert.alert(e.toString());
         }
     }
 
