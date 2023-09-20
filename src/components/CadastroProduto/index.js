@@ -34,7 +34,7 @@ export default function CadastroProduto({ navigation }) {
     let tabelasCriadas = false
 
     async function processamentoUseEffect() {
-        dropTables()
+        // dropTables()
         if (!tabelasCriadas) {
             console.log("Verificando necessidade de criar tabelas...")
             tabelasCriadas = true

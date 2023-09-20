@@ -43,6 +43,17 @@ export default function Venda({ navigation }) {
         return Date.now().toString(36) + Math.random().toString(36).slice(0, 2)
     }
 
+    function geraDataAtual() {
+        const today = new Date();
+    
+        const year = today.getFullYear().toString();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');  // Os meses começam de 0 (janeiro) a 11 (dezembro)
+        const day = today.getDate().toString().padStart(2, '0');
+    
+        const formattedDate = `${year}-${month}-${day}`;
+    
+        return formattedDate;
+    }
     async function salvaDados() {
 
         let novoRegistro = id == undefined
@@ -52,13 +63,15 @@ export default function Venda({ navigation }) {
             stringProdutos += produto.descricao + ','
         }
         stringProdutos = stringProdutos.slice(0, -2);
-        let dataAtual = Date.now().toString()
-        let nsei = createUniqueId()
+        let dataAtual = geraDataAtual()
+        console.log(Date.now())
+        console.log(dataAtual)
+        let geraNovoId = createUniqueId()
 
-        const newid = nsei.toString()
+        const novoId = geraNovoId.toString()
 
         let obj = {
-            id: newid,
+            id: novoId,
             data: dataAtual,
             produtos: stringProdutos,
             preco: totalGeral
