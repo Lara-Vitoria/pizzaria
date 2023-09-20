@@ -34,7 +34,7 @@ export default function CadastroProduto({ navigation }) {
     let tabelasCriadas = false
 
     async function processamentoUseEffect() {
-        dropTables()
+        //dropTables()
         if (!tabelasCriadas) {
             console.log("Verificando necessidade de criar tabelas...")
             tabelasCriadas = true
@@ -173,15 +173,25 @@ export default function CadastroProduto({ navigation }) {
 
                 <View style={styles.linha}>
                     <TouchableOpacity onPress={() => verificaCampos()}
-                        style={[styles.linha, styles.btnBack]}>
+                        style={[styles.linha, styles.btnBack, { width: '96%' }]}>
                         <AntDesign style={styles.icon} name="save" size={18} color="white" />
                         <Text style={styles.btnTxt}>Salvar</Text>
                     </TouchableOpacity>
 
+
+                </View>
+
+                <View style={styles.linha}>
                     <TouchableOpacity style={[styles.linha, styles.btnBack, { backgroundColor: '#BE2A25' }]}
                         onPress={() => limparCampos()}>
                         <Ionicons style={styles.icon} name="backspace-outline" size={18} color="white" />
                         <Text style={styles.btnTxt}>Limpar</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.linha, styles.btnBack, { backgroundColor: '#BE2A25' }]}
+                        onPress={() => navigation.navigate('Venda')}>
+                        <AntDesign style={styles.icon} name="back" size={24} color="white" />
+                        <Text style={styles.btnTxt}>Voltar</Text>
                     </TouchableOpacity>
                 </View>
             </View>

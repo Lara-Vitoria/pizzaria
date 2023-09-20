@@ -4,20 +4,25 @@ import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 import styles from './styles';
 
-export default function Produto({ produto, removerElemento, onValorTotalChange, navigation }) {
+export default function Produto({ produto, removerElemento, onValorTotalChange, onProdutosChange, navigation }) {
     const [quantidade, setQuantidade] = useState(0);
     const [valorTotal, setValorTotal] = useState(0);
+    const [descricao, setDescricao] = useState('');
     const [showIcons, setShowIcons] = useState(false);
 
     useEffect(() => {
         const novoValorTotal = quantidade * produto.preco;
         setValorTotal(novoValorTotal);
         onValorTotalChange(novoValorTotal);
+
     }, []);
 
     const incrementarQuantidade = () => {
         setQuantidade(quantidade + 1);
         onValorTotalChange(produto.preco);
+        setDescricao(produto.descricao);
+        if (quantidade === 0)
+            onProdutosChange('adicionar', produto.descricao);
     };
 
     const decrementarQuantidade = () => {
@@ -28,6 +33,11 @@ export default function Produto({ produto, removerElemento, onValorTotalChange, 
 
         setQuantidade(quantidade - 1);
         onValorTotalChange(-produto.preco);
+
+        if (quantidade === 1) {
+            setDescricao(null)
+            onProdutosChange('remover', produto.descricao)
+        }
     };
 
     const panResponder = PanResponder.create({

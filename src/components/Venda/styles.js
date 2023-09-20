@@ -15,13 +15,22 @@ const styles = StyleSheet.create({
         fontFamily: 'sans-serif',
         letterSpacing: 2.5,
         fontSize: 28,
+
     },
     icon: {
         left: width * .3,
     },
+    textoSemCadastro: {
+        justifyContent: 'center',
+        top: height * .2,
+        color: '#FA9C1C',
+        fontFamily: 'sans-serif',
+        fontSize: 18,
+    },
     lista: {
         flex: 1,
         height: height,
+
     },
     dadosBack: {
         position: 'absolute',

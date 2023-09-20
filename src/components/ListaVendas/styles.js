@@ -60,15 +60,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
     },
+    dadosBack: {
+        position: 'absolute',
+        bottom: 0,
+        width: width,
+        backgroundColor: '#000',
+        paddingTop: 16
+    },
     btnVoltar: {
         width: '45%',
         height: 70,
+        left: width * .28,
         borderWidth: 1,
         borderColor: '#BE2A25',
         borderRadius: 30,
         backgroundColor: '#FA9C1C',
         alignItems: 'center',
-        top: height * .4
     },
     texto: {
         color: '#BE2A25',

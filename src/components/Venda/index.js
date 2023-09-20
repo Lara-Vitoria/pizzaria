@@ -14,7 +14,7 @@ import {
 export default function Venda({ navigation }) {
     const [id, setId] = useState(0)
     const [totalGeral, setTotalGeral] = useState(0)
-    const [produtosSelecionados, setProdutosSelecionados] = useState([])
+    const [listaProdutos, setListaProdutos] = useState([])
     const [produtos, setProdutos] = useState([])
     let tabelasCriadas = false
 
@@ -39,30 +39,52 @@ export default function Venda({ navigation }) {
         setTotalGeral(totalGeral + valorProduto)
     }
 
+    function geraDataAtual() {
+        const today = new Date();
+
+        const year = today.getFullYear().toString();
+        const month = (today.getMonth() + 1).toString().padStart(2, '0');  // Os meses começam de 0 (janeiro) a 11 (dezembro)
+        const day = today.getDate().toString().padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+
+        return formattedDate;
+    }
+
+    const atualizaLista = (acao, produto) => {
+
+        console.log(acao)
+        console.log(produto)
+
+        if (acao === 'adicionar') {
+            setListaProdutos(produto + ', ' + listaProdutos)
+        } else if (acao === 'remover') {
+            setListaProdutos((prevLista) =>
+                prevLista.replace(new RegExp(produto + ',? ?', 'g'), '')
+            );
+        }
+
+        console.log("lista: ", listaProdutos)
+    }
+
     function createUniqueId() {
         return Date.now().toString(36) + Math.random().toString(36).slice(0, 2)
     }
 
     async function salvaDados() {
 
-        let novoRegistro = id == undefined
-
-        let stringProdutos = ''
-        for (let produto of produtos) {
-            stringProdutos += produto.descricao + ','
-        }
-        stringProdutos = stringProdutos.slice(0, -2);
-        let dataAtual = Date.now().toString()
         let nsei = createUniqueId()
 
         const newid = nsei.toString()
 
         let obj = {
             id: newid,
-            data: dataAtual,
-            produtos: stringProdutos,
+            data: geraDataAtual(),
+            produtos: listaProdutos,
             preco: totalGeral
         }
+
+        console.log(listaProdutos)
 
         try {
             let resposta = (await adicionaVenda(obj));
@@ -120,13 +142,18 @@ export default function Venda({ navigation }) {
                 </TouchableOpacity>
             </View>
 
+            {
+                produtos.length == 0
+                    ? <Text style={styles.textoSemCadastro}>Não há produtos cadastrados</Text>
+                    : null
+            }
             <View contentContainerStyle={{ flex: 1 }}>
-
                 <ScrollView >
                     {
                         produtos.map((produto, index) => (
                             <Produto produto={produto} key={index.toString()} removerElemento={removeProduto}
-                                onValorTotalChange={atualizarTotalGeral} navigation={navigation} />
+                                onValorTotalChange={atualizarTotalGeral} onProdutosChange={atualizaLista}
+                                navigation={navigation} />
                         ))
                     }
                 </ScrollView>
