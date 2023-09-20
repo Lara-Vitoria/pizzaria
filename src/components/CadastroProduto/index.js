@@ -16,10 +16,10 @@ import {
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 import styles from './styles';
-import * as Validacao from '../../utils/Validacao';
+import * as Validacao from '../../Utils/Validacao';
 export default function CadastroProduto({ navigation }) {
 
-    const [id, setId] = useState();
+    const [id, setId] = useState(0);
     const [codigo, setCodigo] = useState(props !== undefined ? props.codigo : '');
     const [descricao, setDescricao] = useState(props !== undefined ? props.descricao : '');
     const [preco, setPreco] = useState(props !== undefined ? props.preco.toString() : 0);

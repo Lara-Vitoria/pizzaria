@@ -102,7 +102,7 @@ export default function Venda({ navigation }) {
             <View style={styles.dadosBack}>
                 <View style={styles.linha}>
 
-                    <TouchableOpacity onPress={navigation.navigate('ListaVendas')} style={[styles.btnCarrinho, styles.linha]}>
+                    <TouchableOpacity onPress={() => navigation.navigate('ListaVendas')} style={[styles.btnCarrinho, styles.linha]}>
                         {
                             totalGeral > 0
                                 ? <Text style={styles.texto}>Valor Total: {totalGeral}</Text>

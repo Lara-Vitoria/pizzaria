@@ -1,6 +1,5 @@
 import * as SQLite from 'expo-sqlite';
 
-
 export function getDbConnection() {
     const cx = SQLite.openDatabase('dbPizzaria.db');
     return cx;
