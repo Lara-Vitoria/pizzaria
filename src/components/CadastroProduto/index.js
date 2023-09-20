@@ -10,6 +10,7 @@ import {
     Image
 } from 'react-native'
 import {
+    dropTables,
     createTable,
     adicionaProduto,
     obtemTodosProdutos,
@@ -33,6 +34,7 @@ export default function CadastroProduto({ navigation }) {
     let tabelasCriadas = false
 
     async function processamentoUseEffect() {
+        dropTables()
         if (!tabelasCriadas) {
             console.log("Verificando necessidade de criar tabelas...")
             tabelasCriadas = true

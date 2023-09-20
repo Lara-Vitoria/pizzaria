@@ -38,6 +38,27 @@ export async function createTable() {
     })
 }
 
+export async function dropTables() {
+    return new Promise((resolve, reject) => {
+        const dropQueryProdutos = 'DROP TABLE IF EXISTS tbProdutos';
+        const dropQueryVendas = 'DROP TABLE IF EXISTS tbVendas';
+
+        let dbCx = getDbConnection();
+
+        dbCx.transaction(
+            (tx) => {
+                tx.executeSql(dropQueryProdutos);
+                tx.executeSql(dropQueryVendas);
+                resolve(true);
+            },
+            (error) => {
+                console.log(error);
+                resolve(false);
+            }
+        );
+    });
+}
+
 export function obtemTodasVendas() {
 
     return new Promise((resolve, reject) => {
