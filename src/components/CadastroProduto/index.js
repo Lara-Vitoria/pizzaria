@@ -21,7 +21,8 @@ import styles from './styles'
 import * as Validacao from '../../Utils/Validacao'
 export default function CadastroProduto({ navigation }) {
 
-    console.log(props)
+    let props = navigation.state.params;
+
     const [id, setId] = useState(props !== undefined ? props.id : undefined)
     const [codigo, setCodigo] = useState(props !== undefined ? props.codigo : '')
     const [descricao, setDescricao] = useState(props !== undefined ? props.descricao : '')
@@ -52,8 +53,6 @@ export default function CadastroProduto({ navigation }) {
     function createUniqueId() {
         return Date.now().toString(36) + Math.random().toString(36).slice(0, 2)
     }
-
-    let props = navigation.state.params
 
     function verificaCampos() {
         if (Validacao.verficaCodigo(codigo)) {

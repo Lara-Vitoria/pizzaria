@@ -33,7 +33,7 @@ export default function Produto({ produto, removerElemento, onValorTotalChange, 
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onPanResponderMove: (e, gestureState) => {
-            if (gestureState.dx > 1) {
+            if (gestureState.dx) {
                 setShowIcons(true);
             }
             if (gestureState.dx < -1) {
@@ -47,7 +47,7 @@ export default function Produto({ produto, removerElemento, onValorTotalChange, 
                 <View style={{ padding: 16, }} {...panResponder.panHandlers} >
                     {showIcons && (
                         <View style={[styles.imgAlinhamento, { marginRight: '10%' }]}>
-                            <TouchableOpacity onPress={() => navigation.navigate('CadastroProduto', produto.id)}>
+                            <TouchableOpacity onPress={() => navigation.navigate('CadastroProduto', produto)}>
                                 <AntDesign style={styles.icon} name="edit" size={24} color="#FA9C1C" />
                             </TouchableOpacity>
 
