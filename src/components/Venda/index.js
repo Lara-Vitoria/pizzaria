@@ -1,68 +1,68 @@
-import { Text, View, TouchableOpacity, StatusBar, Image, Alert, ScrollView } from 'react-native';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Text, View, TouchableOpacity, StatusBar, Image, Alert, ScrollView, Keyboard } from 'react-native'
+import { AntDesign, Ionicons } from '@expo/vector-icons'
 
-import styles from './styles';
-import { useState, useEffect } from 'react';
-import Produto from '../Produto';
+import styles from './styles'
+import { useState, useEffect } from 'react'
+import Produto from '../Produto'
 import {
     excluiProduto,
     obtemTodosProdutos,
     createTable,
     adicionaVenda
-} from '../../services/dbService';
+} from '../../services/dbService'
 
-// let produtos = [
-//     { "codigo": "1", "descricao": "Marguerita", "preco": 10 },
-//     { "codigo": "2", "descricao": "Portuguesa", "preco": 20 },
-//     { "codigo": "3", "descricao": "Brócolis", "preco": 30 },
-//     { "codigo": "4", "descricao": "Mussarela", "preco": 40 },
-//     { "codigo": "5", "descricao": "Mussarela", "preco": 40 },
-//     { "codigo": "6", "descricao": "Mussarela", "preco": 40 },
-//     { "codigo": "7", "descricao": "Mussarela", "preco": 40 },
-//     { "codigo": "8", "descricao": "Mussarela ", "preco": 40 },
-// ]
 export default function Venda({ navigation }) {
-    const [id, setId] = useState(0);
-    const [totalGeral, setTotalGeral] = useState(0);
-    const [produtosSelecionados, setProdutosSelecionados] = useState([]);
-    const [produtos, setProdutos] = useState([]);
-    let tabelasCriadas = false;
+    const [id, setId] = useState(0)
+    const [totalGeral, setTotalGeral] = useState(0)
+    const [produtosSelecionados, setProdutosSelecionados] = useState([])
+    const [produtos, setProdutos] = useState([])
+    let tabelasCriadas = false
 
     async function processamentoUseEffect() {
         if (!tabelasCriadas) {
-            console.log("Verificando necessidade de criar tabelas...");
-            tabelasCriadas = true;
-            await createTable();
+            console.log("Verificando necessidade de criar tabelas...")
+            tabelasCriadas = true
+            await createTable()
         }
 
-        console.log("UseEffect...");
-        await carregaDados();
+        console.log("UseEffect...")
+        await carregaDados()
     }
 
     useEffect(
         () => {
-            console.log('executando useffect');
-            processamentoUseEffect(); //necessário método pois aqui não pode utilizar await...
-        }, []);
+            console.log('executando useffect')
+            processamentoUseEffect() //necessário método pois aqui não pode utilizar await...
+        }, [])
 
     const atualizarTotalGeral = (valorProduto) => {
-        setTotalGeral(totalGeral + valorProduto);
-    };
-    
+        setTotalGeral(totalGeral + valorProduto)
+    }
+
     function createUniqueId() {
-        return Date.now().toString(36) + Math.random().toString(36).slice(0, 2);
+        return Date.now().toString(36) + Math.random().toString(36).slice(0, 2)
     }
 
     async function salvaDados() {
 
-        let novoRegistro = id == undefined;
+        let novoRegistro = id == undefined
+
+        let stringProdutos = ''
+        for (let produto of produtos) {
+            stringProdutos += produto.descricao + ','
+        }
+        stringProdutos = stringProdutos.slice(0, -2);
+        let dataAtual = Date.now().toString()
+        let nsei = createUniqueId()
+
+        const newid = nsei.toString()
 
         let obj = {
-            id: novoRegistro ? createUniqueId() : id,
-            data: Date.now(), 
-            produtos: produtos,
+            id: newid,
+            data: dataAtual,
+            produtos: stringProdutos,
             preco: totalGeral
-        };
+        }
 
         try {
             let resposta = (await adicionaVenda(obj));
@@ -77,35 +77,35 @@ export default function Venda({ navigation }) {
             navigation.navigate('ListaVendas');
 
         } catch (e) {
-            Alert.alert(e);
+            Alert.alert('Error:', e.message)
         }
     }
 
     const mostrarProdutosSelecionados = () => {
-        const selecionados = produtos.filter((produto) => produto.quantidade > 0);
-        setProdutosSelecionados(selecionados);
+        const selecionados = produtos.filter((produto) => produto.quantidade > 0)
+        setProdutosSelecionados(selecionados)
 
         Alert.alert(produtosSelecionados)
         // Abra um modal ou navegue para outra tela para mostrar os produtos selecionados.
         // navigation.navigate('ProdutosSelecionados', { produtosSelecionados: selecionados });
-    };
+    }
 
     async function removeProduto(codigo) {
         try {
-            await excluiProduto(codigo);
-            await carregaDados();
-            Alert.alert('Produto excluido com sucesso!');
+            await excluiProduto(codigo)
+            await carregaDados()
+            Alert.alert('Produto excluido com sucesso!')
         } catch (e) {
-            Alert.alert(e);
+            Alert.alert(e)
         }
     }
 
     async function carregaDados() {
         try {
             let produtos = await obtemTodosProdutos()
-            setProdutos(produtos);
+            setProdutos(produtos)
         } catch (e) {
-            Alert.alert(e.toString());
+            Alert.alert(e.toString())
         }
     }
 
@@ -147,5 +147,5 @@ export default function Venda({ navigation }) {
             </View>
             <StatusBar style="auto" />
         </View>
-    );
+    )
 }
