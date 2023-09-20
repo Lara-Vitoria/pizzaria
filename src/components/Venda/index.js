@@ -7,7 +7,8 @@ import Produto from '../Produto';
 import {
     excluiProduto,
     obtemTodosProdutos,
-    createTable
+    createTable,
+    adicionaVenda
 } from '../../services/dbService';
 
 // let produtos = [
@@ -21,18 +22,18 @@ import {
 //     { "codigo": "8", "descricao": "Mussarela ", "preco": 40 },
 // ]
 export default function Venda({ navigation }) {
-
+    const [id, setId] = useState(0);
     const [totalGeral, setTotalGeral] = useState(0);
     const [produtosSelecionados, setProdutosSelecionados] = useState([]);
     const [produtos, setProdutos] = useState([]);
-    // const tabelasCriadas = true;
+    let tabelasCriadas = false;
 
     async function processamentoUseEffect() {
-        // if (!tabelasCriadas) {
-        //     console.log("Verificando necessidade de criar tabelas...");
-        //     tabelasCriadas = true;
-        //     await createTable();
-        // }
+        if (!tabelasCriadas) {
+            console.log("Verificando necessidade de criar tabelas...");
+            tabelasCriadas = true;
+            await createTable();
+        }
 
         console.log("UseEffect...");
         await carregaDados();
@@ -47,6 +48,38 @@ export default function Venda({ navigation }) {
     const atualizarTotalGeral = (valorProduto) => {
         setTotalGeral(totalGeral + valorProduto);
     };
+    
+    function createUniqueId() {
+        return Date.now().toString(36) + Math.random().toString(36).slice(0, 2);
+    }
+
+    async function salvaDados() {
+
+        let novoRegistro = id == undefined;
+
+        let obj = {
+            id: novoRegistro ? createUniqueId() : id,
+            data: Date.now(), 
+            produtos: produtos,
+            preco: totalGeral
+        };
+
+        try {
+            let resposta = (await adicionaVenda(obj));
+            console.log(resposta);
+
+            if (resposta)
+                Alert.alert('adicionado com sucesso!');
+            else
+                Alert.alert('Ocorreu um erro!');
+
+            Keyboard.dismiss();
+            navigation.navigate('ListaVendas');
+
+        } catch (e) {
+            Alert.alert(e);
+        }
+    }
 
     const mostrarProdutosSelecionados = () => {
         const selecionados = produtos.filter((produto) => produto.quantidade > 0);
@@ -102,7 +135,7 @@ export default function Venda({ navigation }) {
             <View style={styles.dadosBack}>
                 <View style={styles.linha}>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('ListaVendas')} style={[styles.btnCarrinho, styles.linha]}>
+                    <TouchableOpacity onPress={() => salvaDados()} style={[styles.btnCarrinho, styles.linha]}>
                         {
                             totalGeral > 0
                                 ? <Text style={styles.texto}>Valor Total: {totalGeral}</Text>

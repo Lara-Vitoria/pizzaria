@@ -47,11 +47,11 @@ export default function Produto({ produto, removerElemento, onValorTotalChange, 
                 <View style={{ padding: 16, }} {...panResponder.panHandlers} >
                     {showIcons && (
                         <View style={[styles.imgAlinhamento, { marginRight: '10%' }]}>
-                            <TouchableOpacity onPress={() => navigation.navigate('CadastroProduto', produto)}>
+                            <TouchableOpacity onPress={() => navigation.navigate('CadastroProduto', produto.id)}>
                                 <AntDesign style={styles.icon} name="edit" size={24} color="#FA9C1C" />
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => removerElemento(produto.codigo)}>
+                            <TouchableOpacity onPress={() => removerElemento(produto.id)}>
                                 <AntDesign style={styles.icon} name="delete" size={32} color='#FA9C1C' />
                             </TouchableOpacity>
                         </View>

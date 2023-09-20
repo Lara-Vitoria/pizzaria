@@ -7,18 +7,27 @@ export function getDbConnection() {
 
 export async function createTable() {
     return new Promise((resolve, reject) => {
-        const query = `CREATE TABLE IF NOT EXISTS tbProdutos
+        const queryProdutos = `CREATE TABLE IF NOT EXISTS tbProdutos
         (
-            id text not null primary key,
-            codigo text not null,
-            preco text not null,          
-            descricao text not null          
+            id TEXT NOT NULL PRIMARY KEY,
+            codigo TEXT NOT NULL,
+            preco TEXT NOT NULL,
+            descricao TEXT NOT NULL
+        )`;
+
+        const queryVendas = `CREATE TABLE IF NOT EXISTS tbVendas
+        (
+            id TEXT NOT NULL PRIMARY KEY,
+            data TEXT NOT NULL,
+            produtos TEXT NOT NULL,
+            preco TEXT NOT NULL
         )`;
 
         let dbCx = getDbConnection();
 
         dbCx.transaction(tx => {
-            tx.executeSql(query);
+            tx.executeSql(queryProdutos);
+            tx.executeSql(queryVendas);
             resolve(true);
         },
             error => {
@@ -27,7 +36,40 @@ export async function createTable() {
             }
         );
     });
-};
+}
+
+export function obtemTodasVendas() {
+
+    return new Promise((resolve, reject) => {
+
+        let dbCx = getDbConnection();
+        dbCx.transaction(tx => {
+            let query = 'select * from tbVendas';
+            tx.executeSql(query, [],
+                (tx, registros) => {
+
+                    var retorno = []
+
+                    for (let n = 0; n < registros.rows.length; n++) {
+                        let obj = {
+                            id: registros.rows.item(n).id,
+                            data: registros.rows.item(n).data,
+                            produtos: registros.rows.item(n).produtos,
+                            preco: registros.rows.item(n).preco,
+                        }
+                        retorno.push(obj);
+                    }
+                    resolve(retorno);
+                })
+        },
+            error => {
+                console.log(error);
+                resolve([]);
+            }
+        )
+    }
+    );
+}
 
 export function obtemTodosProdutos() {
 
@@ -62,6 +104,27 @@ export function obtemTodosProdutos() {
     );
 }
 
+export function adicionaVenda(venda) {
+
+    return new Promise((resolve, reject) => {
+        let query = 'insert into tbVendas (id, data, produtos, preco) values (?,?,?,?)';
+        let dbCx = getDbConnection();
+
+        dbCx.transaction(tx => {
+            tx.executeSql(query, [venda.id, venda.data, venda.produtos, venda.preco],
+                (tx, resultado) => {
+                    resolve(resultado.rowsAffected > 0);
+                })
+        },
+            error => {
+                console.log(error);
+                resolve(false);
+            }
+        )
+    }
+    );
+}
+
 export function adicionaProduto(produto) {
 
     return new Promise((resolve, reject) => {
@@ -84,7 +147,7 @@ export function adicionaProduto(produto) {
 }
 
 export function alteraProduto(produto) {
-    console.log('Editar produto');
+    console.log(produto);
     return new Promise((resolve, reject) => {
         let query = 'update tbProdutos set codigo=?, preco=?, descricao=? where id=?';
         let dbCx = getDbConnection();
